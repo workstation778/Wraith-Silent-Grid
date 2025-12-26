@@ -1,0 +1,27 @@
+name: Obsidian Otonom Logic
+on:
+  repository_dispatch:
+    types: [obsidian_loop]
+  workflow_dispatch:
+    inputs:
+      worker_id:
+        description: 'Manuel Baslatma ID (1-8)'
+        required: true
+        default: '1'
+
+jobs:
+  obsidian-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Run Obsidian Node
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          MIYSOFT_KEY: ${{ secrets.MIYSOFT_KEY }}
+          WALLET_XMR: ${{ secrets.WALLET_XMR }}
+          WORKER_ID: ${{ github.event.client_payload.worker_id || github.event.inputs.worker_id || 1 }}
+        run: |
+          chmod +x worker_obsidian.sh
+          ./worker_obsidian.sh
